@@ -18,15 +18,12 @@ class Model(db.Model):
 
     model_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     year = db.Column(db.Integer, nullable=False)
-
-    # "brand_name" is the same as "name" in the Brands table.
     brand_name = db.Column(db.String(50), db.ForeignKey('brands.name'),
                            nullable=False)
     name = db.Column(db.String(50), nullable=False)
 
-    # Establish backreference from Brands to Models. When I am on a brand
-    # object and do ".models", get list of models of that brand.
-
+    # Make so when on a Brand object and do ".models", get list of Model
+    # objects associated with that brand. Order by model year.
     brand = db.relationship('Brand', backref=db.backref('models',
                             order_by=year))
 
@@ -40,17 +37,10 @@ class Brand(db.Model):
     __tablename__ = "brands"
 
     brand_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # name is the same as brand_name in the Models table.
-    name = db.Column(db.String(50), db.ForeignKey('models.brand_name'),
-                     nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     founded = db.Column(db.Integer)
     headquarters = db.Column(db.String(50))
     discontinued = db.Column(db.Integer)
-
-    # Establish backreference from Models to Brands. When I am on a model
-    # object and do ".brand", get the brand of that model.
-
-    model = db.relationship('Model', backref=db.backref('brand'))
 
     def __repr__(self):
         return "<brand_id=%r, name=%r, founded=%r, HQ=%r, disc=%r" % (
